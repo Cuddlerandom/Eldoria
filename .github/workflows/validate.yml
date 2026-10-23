@@ -1,0 +1,23 @@
+name: Validate Eldoria
+on:
+  push:
+  pull_request:
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Check JavaScript syntax
+        run: |
+          find src -name '*.js' -print0 | xargs -0 -n1 node --check
+      - name: Verify game entry points
+        run: |
+          test -f index.html
+          test -f src/game.js
+          test -f src/styles.css
+          grep -q 'src/game.js' index.html
+          grep -q 'src/styles.css' index.html
+          grep -q 'id="game"' index.html
